@@ -2,18 +2,18 @@
 
 namespace App\Services;
 
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Resources\CategoryCollection;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use App\Repositories\CategoryRepository;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class CategoryService
 {
-    public function __construct(protected CategoryRepository $categoryRepository)
-    {}
-
-    public function getAllCategories(): Collection
+    public function getAllCategories(): CategoryCollection
     {
-        return $this->categoryRepository->getAllCategories();
+        return new CategoryCollection(Category::all());
     }
 
     public function getSingleCategory(Category $category): Category
@@ -21,18 +21,23 @@ class CategoryService
         return $category;
     }
 
-    public function storeCategory(array $data): Category
+    public function storeCategory(StoreCategoryRequest $request): Category
     {
-        return $this->categoryRepository->storeCategory($data);
+        return DB::transaction(function () use ($request) {
+            return Category::create($request->toArray());
+        });
     }
 
     public function deleteCategory(Category $category): bool
     {
-        return (bool) $this->categoryRepository->deleteCategory($category);
+        return DB::transaction(fn() => $category->delete());
     }
 
-    public function updateCategory(Category $category, array $data): Category
+    public function updateCategory(Category $category, UpdateCategoryRequest $request): CategoryResource
     {
-        return $this->categoryRepository->updateCategory($category, $data);
+        return CategoryResource::make(
+            DB::transaction(fn() => tap($category, fn($c) => $c->update($request->toArray())))
+        );
+
     }
 }
