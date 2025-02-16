@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::middleware('admin')
+Route::middleware(['admin', 'auth:sanctum'])
     ->prefix('categories/')
     ->name('categories.')
     ->group(function(){
