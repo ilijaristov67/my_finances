@@ -18,28 +18,28 @@ class CategoriesController extends Controller
 
     public function index(): CategoryCollection
     {
-        return new CategoryCollection($this->categoryService->getAllCategories());
+        return $this->categoryService->getAllCategories();
     }
 
     public function show(Category $category): CategoryResource
     {
         return CategoryResource::make($this->categoryService->getSingleCategory($category));
-    } 
+    }
 
     public function store(StoreCategoryRequest $request)
     {
-        return CategoryResource::make($this->categoryService->storeCategory($request->validated()));
+        return CategoryResource::make($this->categoryService->storeCategory($request));
     }
-    
+
     public function destroy(Category $category): JsonResponse
     {
         return $this->categoryService->deleteCategory($category)
             ? response()->json(['message' => 'Category deleted successfully'], 200)
             : response()->json(['message' => 'Failed to delete category'], 500);
     }
-    
+
     public function update(Category $category, UpdateCategoryRequest $request): CategoryResource
     {
-        return CategoryResource::make($this->categoryService->updateCategory($category, $request->validated()));
+        return $this->categoryService->updateCategory($category, $request);
     }
 }
