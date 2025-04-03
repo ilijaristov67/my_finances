@@ -17,16 +17,16 @@ class UserRegisterRequest extends FormRequest
         return [
             'name' => 'required|string|max:40',
             'surname' => 'required|string|max:40',
-            'email'=> 'required|string|email|unique:users,email',
+            'email' => 'required|string|email|unique:users,email',
             'password' => [
                 'required',
                 'string',
                 Password::min(8)
                     ->mixedCase()
                     ->letters()
-                    ->numbers() 
-                    ->symbols() 
-                    ->uncompromised(), 
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised(),
             ],
         ];
     }
