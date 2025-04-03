@@ -10,10 +10,11 @@ class UpdateCategoryRequest extends FormRequest
     {
         return true;
     }
+
     public function rules(): array
     {
         return [
-            'category' => 'required|string|max:50'
+            'category' => 'required|string|max:50',
         ];
     }
 }
